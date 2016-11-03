@@ -1,0 +1,20 @@
+{
+    "name": "whitelabeled/daisycon-api-client",
+    "description": "Daisycon API client",
+    "type": "project",
+    "require": {
+        "nategood/httpful": "^0.2.20"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "whitelabeled\\DaisyconApi\\": "src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Whitelabeled",
+            "email": "info@whitelabeled.nl"
+        }
+    ]
+}
