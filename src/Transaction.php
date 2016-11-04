@@ -1,40 +1,151 @@
 <?php
 namespace whitelabeled\DaisyconApi;
 
+use DateTime;
+
 class Transaction {
+    /**
+     * @var string
+     */
     public $id;
+
+    /**
+     * @var string
+     */
     public $partId;
 
+    /**
+     * @var DateTime
+     */
     public $transactionDate;
+
+    /**
+     * @var DateTime
+     */
     public $clickDate;
+
+    /**
+     * @var DateTime
+     */
     public $approvalDate;
+
+    /**
+     * @var DateTime
+     */
     public $lastModifiedDate;
 
+    /**
+     * @var string
+     */
     public $programId;
+
+    /**
+     * @var string
+     */
     public $countryId;
+
+    /**
+     * @var string
+     */
     public $regionId;
+
+    /**
+     * @var string
+     */
     public $gender;
+
+    /**
+     * @var string
+     */
     public $age;
+
+    /**
+     * @var string
+     */
     public $deviceType;
+
+    /**
+     * @var string
+     */
     public $program;
+
+    /**
+     * @var string
+     */
     public $ipAddress;
+
+    /**
+     * @var string
+     */
     public $status;
+
+    /**
+     * @var string
+     */
     public $disapprovedReason;
 
+    /**
+     * @var string
+     */
     public $subId;
+
+    /**
+     * @var string
+     */
     public $subId2;
+
+    /**
+     * @var string
+     */
     public $subId3;
+
+    /**
+     * @var string
+     */
     public $reference;
 
+    /**
+     * @var double
+     */
     public $commission;
+
+    /**
+     * @var double
+     */
     public $revenue;
 
+    /**
+     * @var string
+     */
     public $extra1;
+
+    /**
+     * @var string
+     */
     public $extra2;
+
+    /**
+     * @var string
+     */
     public $extra3;
+
+    /**
+     * @var string
+     */
     public $extra4;
+
+    /**
+     * @var string
+     */
     public $extra5;
 
+
+    /**
+     * Create a Transaction object from two JSON objects
+     * @param $transData \stdClass Transaction data
+     * @param $part      \stdClass Part data
+     * @return Transaction
+     */
     public static function createFromJson($transData, $part) {
         $transaction = new Transaction();
 
@@ -73,6 +184,11 @@ class Transaction {
         return $transaction;
     }
 
+    /**
+     * Parse a date
+     * @param $date string Date/time string
+     * @return DateTime|null
+     */
     private static function parseDate($date) {
         if ($date == null) {
             return null;
