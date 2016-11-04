@@ -11,10 +11,16 @@ class DaisyconClient {
     private $token;
 
     protected $endpoint = 'https://services.daisycon.com';
-    protected $itemsPerPage = 1000;
+    protected $itemsPerPage = 200;
 
     public $mediaIds = [];
 
+    /**
+     * DaisyconClient constructor.
+     * @param $username    string Daisycon username
+     * @param $password    string Password
+     * @param $publisherId string Publisher ID
+     */
     public function __construct($username, $password, $publisherId) {
         $this->username = $username;
         $this->password = $password;
@@ -23,6 +29,10 @@ class DaisyconClient {
         $this->generateToken();
     }
 
+    /**
+     * Generates an Auth token
+     * @throws \Exception
+     */
     private function generateToken() {
         $request = Request::post($this->endpoint . '/authenticate')
             ->sendsJson()
@@ -38,6 +48,10 @@ class DaisyconClient {
         $this->token = $response->body;
     }
 
+    /**
+     * Get a token (or generate it)
+     * @return string
+     */
     private function getToken() {
         if ($this->token == null) {
             $this->generateToken();
@@ -46,9 +60,17 @@ class DaisyconClient {
         return $this->token;
     }
 
-    public function getTransactions(DateTime $startDate, DateTime $endDate = null) {
+    /**
+     * Get all transactions from $startDate until $endDate.
+     *
+     * @param DateTime      $startDate Start date
+     * @param DateTime|null $endDate   End date, optional.
+     * @param int           $page      Page, optional. Pagination starts with page=1
+     * @return array Transaction objects. Each part of a transaction is returned as a separate Transaction.
+     */
+    public function getTransactions(DateTime $startDate, DateTime $endDate = null, $page = 1) {
         $params = [
-            'page'                => 1,
+            'page'                => $page,
             'per_page'            => $this->itemsPerPage,
             'date_modified_start' => $startDate->format('Y-m-d H:i:s'),
         ];
@@ -62,9 +84,11 @@ class DaisyconClient {
         }
 
         $query = '?' . http_build_query($params);
-        $transactionsData = $this->makeRequest("/publishers/{$this->publisherId}/transactions", $query);
+        $response = $this->makeRequest("/publishers/{$this->publisherId}/transactions", $query);
 
+        $transCounter = 0;
         $transactions = [];
+        $transactionsData = $response->body;
 
         if ($transactionsData != null) {
             foreach ($transactionsData as $transactionData) {
@@ -72,7 +96,18 @@ class DaisyconClient {
                     $transaction = Transaction::createFromJson($transactionData, $transPart);
                     $transactions[] = $transaction;
                 }
+
+                $transCounter++;
             }
+        }
+
+        // Check whether more iterations are needed:
+        $totalItems = $response->headers['x-total-count'];
+        $currentPageTotal = $transCounter + $this->itemsPerPage * ($page - 1);
+
+        // Retrieve more items when
+        if ($totalItems > $currentPageTotal) {
+            $transactions = array_merge($transactions, $this->getTransactions($startDate, $endDate, $page + 1));
         }
 
         return $transactions;
@@ -80,7 +115,6 @@ class DaisyconClient {
 
     protected function makeRequest($resource, $query = "") {
         $uri = $this->endpoint . $resource;
-        echo $uri;
 
         $request = Request::get($uri . $query)
             ->addHeader('Authorization', 'Bearer ' . $this->getToken())
@@ -90,8 +124,9 @@ class DaisyconClient {
 
         // Check for errors
         if ($response->hasErrors()) {
+            throw new \Exception('Invalid data');
         }
 
-        return $response->body;
+        return $response;
     }
 }
