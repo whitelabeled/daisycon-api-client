@@ -139,6 +139,11 @@ class Transaction {
      */
     public $extra5;
 
+    /**
+     * @var string
+     */
+    public $publisherDescription;
+
 
     /**
      * Create a Transaction object from two JSON objects
@@ -166,6 +171,7 @@ class Transaction {
         $transaction->subId2 = $part->subid_2;
         $transaction->subId3 = $part->subid_3;
         $transaction->reference = $part->referencenumber;
+        $transaction->publisherDescription = $part->publisher_description;
         $transaction->extra1 = $part->extra_1;
         $transaction->extra2 = $part->extra_2;
         $transaction->extra3 = $part->extra_3;
