@@ -69,6 +69,9 @@ Array
             [extra3] => 
             [extra4] => 
             [extra5] => 
+            [publisherDescription] => Exciting product
+            [mediaId] => 123456
+            [mediaName] => Super interesting website
         )
 
 )

@@ -144,6 +144,16 @@ class Transaction {
      */
     public $publisherDescription;
 
+    /**
+     * @var int
+     */
+    public $mediaId;
+
+    /**
+     * @var string
+     */
+    public $mediaName;
+
 
     /**
      * Create a Transaction object from two JSON objects
@@ -159,6 +169,9 @@ class Transaction {
         $transaction->program = $transData->program_name;
         $transaction->programId = $transData->program_id;
         $transaction->ipAddress = $transData->anonymous_ip;
+
+        $transaction->mediaId = $part->media_id;
+        $transaction->mediaName = $part->media_name;
 
         $transaction->transactionDate = self::parseDate($part->date);
         $transaction->clickDate = self::parseDate($part->date_click);
