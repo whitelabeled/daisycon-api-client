@@ -1,4 +1,5 @@
 <?php
+
 namespace whitelabeled\DaisyconApi;
 
 use DateTime;
@@ -105,9 +106,29 @@ class Transaction {
     public $reference;
 
     /**
-     * @var double
+     * @var double Effective commission for this sale
      */
-    public $commission;
+    public $commissionAmount;
+
+    /**
+     * @var double Total commission for this sale
+     */
+    public $totalCommissionAmount;
+
+    /**
+     * @var boolean Whether the commission for this sale is shared with a service provider
+     */
+    public $sharedCommission;
+
+    /**
+     * @var double Percentage of the total sale commission
+     */
+    public $commissionPercentage;
+
+    /**
+     * @var integer Revenue share partner ID
+     */
+    public $revenueSharePartner;
 
     /**
      * @var double
@@ -157,11 +178,12 @@ class Transaction {
 
     /**
      * Create a Transaction object from two JSON objects
-     * @param $transData \stdClass Transaction data
-     * @param $part      \stdClass Part data
+     * @param \stdClass $transData       Transaction data
+     * @param \stdClass $part            Part data
+     * @param boolean   $revShareEnabled Revenue share enabled
      * @return Transaction
      */
-    public static function createFromJson($transData, $part) {
+    public static function createFromJson($transData, $part, $revShareEnabled) {
         $transaction = new Transaction();
 
         $transaction->id = $transData->affiliatemarketing_id;
@@ -191,8 +213,22 @@ class Transaction {
         $transaction->extra4 = $part->extra_4;
         $transaction->extra5 = $part->extra_5;
 
-        $transaction->commission = $part->commission;
+        $transaction->commissionAmount = $part->commission;
         $transaction->revenue = $part->revenue;
+
+        $revShareMatch = preg_match('/^([0-9]+)\|([,\.0-9]+)$/', $transaction->extra2, $revShareMatches);
+        if ($revShareEnabled && $revShareMatch == 1) {
+            $transaction->revenueSharePartner = $revShareMatches[1];
+            $partnerCommission = $revShareMatches[2];
+            $transaction->sharedCommission = true;
+            $transaction->totalCommissionAmount = $partnerCommission + $transaction->commissionAmount;
+            $transaction->commissionPercentage = $transaction->commissionAmount / $transaction->totalCommissionAmount * 100;
+        } else {
+            $transaction->sharedCommission = false;
+            $transaction->totalCommissionAmount = $transaction->commissionAmount;
+            $transaction->sharedCommission = 0;
+            $transaction->commissionPercentage = 100;
+        }
 
         $transaction->age = $transData->age;
         $transaction->gender = $transData->gender;

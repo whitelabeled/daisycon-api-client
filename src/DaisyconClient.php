@@ -1,4 +1,5 @@
 <?php
+
 namespace whitelabeled\DaisyconApi;
 
 use DateTime;
@@ -13,6 +14,14 @@ class DaisyconClient {
     protected $endpoint = 'https://services.daisycon.com';
     protected $itemsPerPage = 200;
 
+    /**
+     * @var boolean Enable revenue share processing
+     */
+    public $revShareEnabled = false;
+
+    /**
+     * @var array Restrict to media ID's
+     */
     public $mediaIds = [];
 
     /**
@@ -96,7 +105,7 @@ class DaisyconClient {
         if ($transactionsData != null) {
             foreach ($transactionsData as $transactionData) {
                 foreach ($transactionData->parts as $transPart) {
-                    $transaction = Transaction::createFromJson($transactionData, $transPart);
+                    $transaction = Transaction::createFromJson($transactionData, $transPart, $this->revShareEnabled);
                     $transactions[] = $transaction;
                 }
 
