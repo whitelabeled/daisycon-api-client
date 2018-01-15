@@ -62,7 +62,11 @@ Array
             [subId2] => 958503
             [subId3] => 
             [reference] => 
-            [commission] => 25
+            [commissionAmount] => 6
+            [totalCommissionAmount] => 6
+            [sharedCommission] => 0
+            [commissionPercentage] => 100
+            [revenueSharePartner] => 
             [revenue] => 0
             [extra1] => 
             [extra2] => 
