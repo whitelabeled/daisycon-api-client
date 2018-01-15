@@ -80,6 +80,6 @@ Array
 
 ## License
 
-© Whitelabeled BV
+© Goldlabeled BV
 
 MIT license, see [LICENSE.txt](LICENSE.txt) for details.
