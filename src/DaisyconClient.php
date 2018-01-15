@@ -20,6 +20,7 @@ class DaisyconClient {
      * @param $username    string Daisycon username
      * @param $password    string Password
      * @param $publisherId string Publisher ID
+     * @throws DaisyconApiException
      */
     public function __construct($username, $password, $publisherId) {
         $this->username = $username;
@@ -31,7 +32,7 @@ class DaisyconClient {
 
     /**
      * Generates an Auth token
-     * @throws \Exception
+     * @throws DaisyconApiException
      */
     private function generateToken() {
         $request = Request::post($this->endpoint . '/authenticate')
@@ -42,7 +43,7 @@ class DaisyconClient {
 
         if ($response->hasErrors()) {
             $this->token = null;
-            throw new \Exception('Auth failure');
+            throw new DaisyconApiException('Auth failure');
         }
 
         $this->token = $response->body;
@@ -51,6 +52,7 @@ class DaisyconClient {
     /**
      * Get a token (or generate it)
      * @return string
+     * @throws DaisyconApiException
      */
     private function getToken() {
         if ($this->token == null) {
@@ -67,6 +69,7 @@ class DaisyconClient {
      * @param DateTime|null $endDate   End date, optional.
      * @param int           $page      Page, optional. Pagination starts with page=1
      * @return array Transaction objects. Each part of a transaction is returned as a separate Transaction.
+     * @throws DaisyconApiException
      */
     public function getTransactions(DateTime $startDate, DateTime $endDate = null, $page = 1) {
         $params = [
@@ -113,6 +116,12 @@ class DaisyconClient {
         return $transactions;
     }
 
+    /**
+     * @param        $resource
+     * @param string $query
+     * @return mixed
+     * @throws DaisyconApiException
+     */
     protected function makeRequest($resource, $query = "") {
         $uri = $this->endpoint . $resource;
 
@@ -124,7 +133,7 @@ class DaisyconClient {
 
         // Check for errors
         if ($response->hasErrors()) {
-            throw new \Exception('Invalid data');
+            throw new DaisyconApiException('Invalid data');
         }
 
         return $response;
