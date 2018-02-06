@@ -216,7 +216,8 @@ class Transaction {
         $transaction->commissionAmount = $part->commission;
         $transaction->revenue = $part->revenue;
 
-        $revShareMatch = preg_match('/^([0-9]+)\|([,\.0-9]+)$/', $transaction->extra2, $revShareMatches);
+        $revShareMatch = preg_match('/^([0-9]+)\|([,\.0-9]+)$/', $transaction->subId2, $revShareMatches);
+
         if ($revShareEnabled && $revShareMatch == 1) {
             $transaction->revenueSharePartner = $revShareMatches[1];
             $partnerCommission = $revShareMatches[2];
