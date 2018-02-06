@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.1
+
+* Fixed a bug in revenue sharing
+
 ## v2.0.0
 
 * Exceptions refactored to DaisyconApiException
