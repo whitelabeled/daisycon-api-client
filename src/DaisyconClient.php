@@ -8,9 +8,9 @@ use Httpful\Request;
 class DaisyconClient {
     private $username;
     private $password;
-    private $publisherId;
     private $token;
 
+    protected $publisherId;
     protected $endpoint = 'https://services.daisycon.com';
     protected $itemsPerPage = 200;
 

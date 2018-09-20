@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.1.0
+
+* Made `publisherId` in DaisyconClient protected instead of private
+
 ## v2.0.1
 
 * Fixed a bug in revenue sharing
