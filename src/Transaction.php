@@ -235,7 +235,6 @@ class Transaction {
         $transaction->gender = $transData->gender;
         $transaction->deviceType = $transData->device_type;
         $transaction->countryId = $transData->country_id;
-        $transaction->regionId = $transData->region_id;
 
         return $transaction;
     }
