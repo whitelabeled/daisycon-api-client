@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.1.1
+
+* Do not process `region_id` anymore
+
 ## v2.1.0
 
 * Made `publisherId` in DaisyconClient protected instead of private
