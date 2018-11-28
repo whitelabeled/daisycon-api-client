@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.1.2
+
+* Do not process `age`, `gender`, `deviceType`, `country_id` anymore (not present in Daisycon API anymore)
+
 ## v2.1.1
 
 * Do not process `region_id` anymore
