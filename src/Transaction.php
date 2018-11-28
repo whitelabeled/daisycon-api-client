@@ -4,7 +4,8 @@ namespace whitelabeled\DaisyconApi;
 
 use DateTime;
 
-class Transaction {
+class Transaction
+{
     /**
      * @var string
      */
@@ -178,12 +179,13 @@ class Transaction {
 
     /**
      * Create a Transaction object from two JSON objects
-     * @param \stdClass $transData       Transaction data
-     * @param \stdClass $part            Part data
-     * @param boolean   $revShareEnabled Revenue share enabled
+     * @param \stdClass $transData Transaction data
+     * @param \stdClass $part Part data
+     * @param boolean $revShareEnabled Revenue share enabled
      * @return Transaction
      */
-    public static function createFromJson($transData, $part, $revShareEnabled) {
+    public static function createFromJson($transData, $part, $revShareEnabled)
+    {
         $transaction = new Transaction();
 
         $transaction->id = $transData->affiliatemarketing_id;
@@ -231,10 +233,10 @@ class Transaction {
             $transaction->commissionPercentage = 100;
         }
 
-        $transaction->age = $transData->age;
-        $transaction->gender = $transData->gender;
-        $transaction->deviceType = $transData->device_type;
-        $transaction->countryId = $transData->country_id;
+        // Optional data:
+        if (isset($transData->device_type)) {
+            $transaction->deviceType = $transData->device_type;
+        }
 
         return $transaction;
     }
@@ -244,7 +246,8 @@ class Transaction {
      * @param $date string Date/time string
      * @return DateTime|null
      */
-    private static function parseDate($date) {
+    private static function parseDate($date)
+    {
         if ($date == null) {
             return null;
         } else {
