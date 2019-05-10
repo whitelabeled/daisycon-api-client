@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.1.3
+
+* Return referer URL in transactions
+
 ## v2.1.2
 
 * Do not process `age`, `gender`, `deviceType`, `country_id` anymore (not present in Daisycon API anymore)
