@@ -107,6 +107,11 @@ class Transaction
     public $reference;
 
     /**
+     * @var string
+     */
+    public $refererUrl;
+
+    /**
      * @var double Effective commission for this sale
      */
     public $commissionAmount;
@@ -214,6 +219,7 @@ class Transaction
         $transaction->extra3 = $part->extra_3;
         $transaction->extra4 = $part->extra_4;
         $transaction->extra5 = $part->extra_5;
+        $transaction->refererUrl = $part->referer_click;
 
         $transaction->commissionAmount = $part->commission;
         $transaction->revenue = $part->revenue;
