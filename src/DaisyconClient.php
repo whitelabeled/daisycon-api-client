@@ -8,7 +8,6 @@ use Httpful\Request;
 class DaisyconClient {
     private $username;
     private $password;
-    private $token;
 
     protected $publisherId;
     protected $endpoint = 'https://services.daisycon.com';
@@ -29,46 +28,11 @@ class DaisyconClient {
      * @param $username    string Daisycon username
      * @param $password    string Password
      * @param $publisherId string Publisher ID
-     * @throws DaisyconApiException
      */
     public function __construct($username, $password, $publisherId) {
         $this->username = $username;
         $this->password = $password;
         $this->publisherId = $publisherId;
-
-        $this->generateToken();
-    }
-
-    /**
-     * Generates an Auth token
-     * @throws DaisyconApiException
-     */
-    private function generateToken() {
-        $request = Request::post($this->endpoint . '/authenticate')
-            ->sendsJson()
-            ->body(['username' => $this->username, 'password' => $this->password]);
-
-        $response = $request->send();
-
-        if ($response->hasErrors()) {
-            $this->token = null;
-            throw new DaisyconApiException('Auth failure');
-        }
-
-        $this->token = $response->body;
-    }
-
-    /**
-     * Get a token (or generate it)
-     * @return string
-     * @throws DaisyconApiException
-     */
-    private function getToken() {
-        if ($this->token == null) {
-            $this->generateToken();
-        }
-
-        return $this->token;
     }
 
     /**
@@ -135,7 +99,7 @@ class DaisyconClient {
         $uri = $this->endpoint . $resource;
 
         $request = Request::get($uri . $query)
-            ->addHeader('Authorization', 'Bearer ' . $this->getToken())
+            ->authenticateWithBasic($this->username, $this->password)
             ->expectsJson();
 
         $response = $request->send();

@@ -2,6 +2,10 @@
 
 ## v2.1.3
 
+* Change authentication to OAuth Basic authentication
+
+## v2.1.3
+
 * Return referer URL in transactions
 
 ## v2.1.2
