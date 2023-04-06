@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.0
+
+* Change authentication to OAuth
+
 ## v2.1.4
 
 * Change authentication to OAuth Basic authentication

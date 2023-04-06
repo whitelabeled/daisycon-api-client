@@ -8,11 +8,65 @@ Library to retrieve sales from the Daisycon publisher API.
 
 Usage:
 
+### Login
+
 ```php
 <?php
 require 'vendor/autoload.php';
 
-$client = new \whitelabeled\DaisyconApi\DaisyconClient('username', 'password', '123456');
+session_start();
+
+$client = new \whitelabeled\DaisyconApi\DaisyconClient(
+    '123456',
+    '848840-9900301-99494595-3994984',
+    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    'http://localhost/verify.php'
+);
+$login = $client->login();
+
+$_SESSION['state'] = $login->state;
+$_SESSION['pkce'] = $login->pkceCode;
+
+echo 'Login URL: ' . $login->loginUrl;
+```
+
+### Verify
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+session_start();
+
+$client = new \whitelabeled\DaisyconApi\DaisyconClient(
+    '123456',
+    '848840-9900301-99494595-3994984',
+    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    'http://localhost/verify.php'
+);
+
+$refreshToken = $client->verifyAuthCode($_SESSION['state'], $_SESSION['pkce'], $_GET['state'], $_GET['code']);
+
+// Store refreshtoken in database or persistent storage
+```
+
+### Get transactions
+
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+$client = new \whitelabeled\DaisyconApi\DaisyconClient(
+    '123456',
+    '848840-9900301-99494595-3994984',
+    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    'http://localhost/verify.php'
+);
+
+// Refresh token, store new token in DB:
+$refreshToken = $client->refreshAccessToken($refreshToken);
+
 // Optional:
 //$client->mediaIds = ['666666', '777777'];
 
