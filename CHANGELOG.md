@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.2
+
+* Fix: pagination bugs
+
 ## v3.0.1
 
 * Fix: bug in `getTransactions` method
