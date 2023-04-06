@@ -138,8 +138,6 @@ class DaisyconClient
 
         // Check whether more iterations are needed:
         $totalItems = $response->getHeader('x-total-count');
-        var_dump($response->getBody()->getContents());
-        var_dump($totalItems);exit;
         $currentPageTotal = $transCounter + $this->itemsPerPage * ($page - 1);
 
         // Retrieve more items when

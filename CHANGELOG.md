@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.1
+
+* Fix: bug in `getTransactions` method
+
 ## v3.0.0
 
 * Change authentication to OAuth
