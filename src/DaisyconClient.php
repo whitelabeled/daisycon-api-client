@@ -137,7 +137,8 @@ class DaisyconClient
         }
 
         // Check whether more iterations are needed:
-        $totalItems = $response->getHeader('x-total-count');
+        $totalItems = intval($response->getHeader('x-total-count')[0]);
+
         $currentPageTotal = $transCounter + $this->itemsPerPage * ($page - 1);
 
         // Retrieve more items when
@@ -154,7 +155,7 @@ class DaisyconClient
      * @return mixed
      * @throws DaisyconApiException
      */
-    protected function makeRequest($resource, $query = ""): \GuzzleHttp\Psr7\Request
+    protected function makeRequest($resource, $query = ""): \GuzzleHttp\Psr7\Response
     {
         $uri = $this->endpoint . $resource;
 
@@ -167,19 +168,10 @@ class DaisyconClient
 
         $response = $this->httpClient->send($request);
 
-        if ($response->getStatusCode() != 200) {
+        if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
             throw new DaisyconApiException($response->getBody()->getContents());
         }
 
-        var_dump($response->getBody()->getContents());exit;
-
         return $response;
-    }
-
-    public function setTokens(string $accessToken)
-    {
-        $this->refreshToken();
-
-        $this->accessToken = $accessToken;
     }
 }
