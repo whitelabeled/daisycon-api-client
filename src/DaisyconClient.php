@@ -137,7 +137,11 @@ class DaisyconClient
         }
 
         // Check whether more iterations are needed:
-        $totalItems = intval($response->getHeader('x-total-count')[0]);
+        if ($response->hasHeader('x-total-count')) {
+            $totalItems = intval($response->getHeader('x-total-count')[0]);
+        } else {
+            $totalItems = 0;
+        }
 
         $currentPageTotal = $transCounter + $this->itemsPerPage * ($page - 1);
 
