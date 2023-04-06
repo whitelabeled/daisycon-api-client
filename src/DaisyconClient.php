@@ -3,12 +3,12 @@
 namespace whitelabeled\DaisyconApi;
 
 use DateTime;
-use Httpful\Request;
+use GuzzleHttp\Client;
+use League\OAuth2\Client\Provider\GenericProvider;
+use whitelabeled\DaisyconApi\auth\LoginResponse;
 
-class DaisyconClient {
-    private $username;
-    private $password;
-
+class DaisyconClient
+{
     protected $publisherId;
     protected $endpoint = 'https://services.daisycon.com';
     protected $itemsPerPage = 200;
@@ -24,30 +24,89 @@ class DaisyconClient {
     public $mediaIds = [];
 
     /**
-     * DaisyconClient constructor.
-     * @param $username    string Daisycon username
-     * @param $password    string Password
-     * @param $publisherId string Publisher ID
+     * @var GenericProvider
      */
-    public function __construct($username, $password, $publisherId) {
-        $this->username = $username;
-        $this->password = $password;
+    private $oAuthProvider;
+
+    private $accessToken;
+
+    private $httpClient;
+
+
+    /**
+     * DaisyconClient constructor.
+     */
+    public function __construct($publisherId, $clientId, $clientSecret, $redirectUri)
+    {
         $this->publisherId = $publisherId;
+
+        // Setup oAuth
+        $this->oAuthProvider = new GenericProvider(
+            [
+                'clientId' => $clientId,
+                'clientSecret' => $clientSecret,
+                'redirectUri' => $redirectUri,
+                'urlAuthorize' => 'https://login.daisycon.com/oauth/authorize',
+                'urlAccessToken' => 'https://login.daisycon.com/oauth/access-token',
+                'urlResourceOwnerDetails' => '',
+                'pkceMethod' => GenericProvider::PKCE_METHOD_S256,
+            ]
+        );
+
+        $this->httpClient = new Client();
     }
+
+    public function login(): LoginResponse
+    {
+        $response = new LoginResponse();
+
+        $response->loginUrl = $this->oAuthProvider->getAuthorizationUrl();
+        $response->pkceCode = $this->oAuthProvider->getPkceCode();
+        $response->state = $this->oAuthProvider->getState();
+
+        return $response;
+    }
+
+    public function verifyAuthCode(string $state, string $pkce, string $returnedState, string $returnedCode): string
+    {
+        if ($state != $returnedState) {
+            throw new \Exception('State does not match');
+        }
+
+        // Restore the PKCE code before the `getAccessToken()` call.
+        $this->oAuthProvider->setPkceCode($pkce);
+
+        // Try to get an access token using the authorization code grant.
+        $this->accessToken = $this->oAuthProvider->getAccessToken('authorization_code', [
+            'code' => $returnedCode
+        ]);
+
+        return $this->accessToken->getRefreshToken();
+    }
+
+    public function refreshAccessToken($refreshToken) {
+        $this->accessToken = $this->oAuthProvider->getAccessToken('refresh_token', [
+            'refresh_token' => $refreshToken,
+        ]);
+
+        return $this->accessToken->getRefreshToken();
+    }
+
 
     /**
      * Get all transactions from $startDate until $endDate.
      *
-     * @param DateTime      $startDate Start date
-     * @param DateTime|null $endDate   End date, optional.
-     * @param int           $page      Page, optional. Pagination starts with page=1
+     * @param DateTime $startDate Start date
+     * @param DateTime|null $endDate End date, optional.
+     * @param int $page Page, optional. Pagination starts with page=1
      * @return array Transaction objects. Each part of a transaction is returned as a separate Transaction.
      * @throws DaisyconApiException
      */
-    public function getTransactions(DateTime $startDate, DateTime $endDate = null, $page = 1) {
+    public function getTransactions(DateTime $startDate, DateTime $endDate = null, $page = 1)
+    {
         $params = [
-            'page'                => $page,
-            'per_page'            => $this->itemsPerPage,
+            'page' => $page,
+            'per_page' => $this->itemsPerPage,
             'date_modified_start' => $startDate->format('Y-m-d H:i:s'),
         ];
 
@@ -64,7 +123,7 @@ class DaisyconClient {
 
         $transCounter = 0;
         $transactions = [];
-        $transactionsData = $response->body;
+        $transactionsData = json_decode($response->getBody());
 
         if ($transactionsData != null) {
             foreach ($transactionsData as $transactionData) {
@@ -78,7 +137,9 @@ class DaisyconClient {
         }
 
         // Check whether more iterations are needed:
-        $totalItems = $response->headers['x-total-count'];
+        $totalItems = $response->getHeader('x-total-count');
+        var_dump($response->getBody()->getContents());
+        var_dump($totalItems);exit;
         $currentPageTotal = $transCounter + $this->itemsPerPage * ($page - 1);
 
         // Retrieve more items when
@@ -95,20 +156,32 @@ class DaisyconClient {
      * @return mixed
      * @throws DaisyconApiException
      */
-    protected function makeRequest($resource, $query = "") {
+    protected function makeRequest($resource, $query = ""): \GuzzleHttp\Psr7\Request
+    {
         $uri = $this->endpoint . $resource;
 
-        $request = Request::get($uri . $query)
-            ->authenticateWithBasic($this->username, $this->password)
-            ->expectsJson();
+        $request = $this->oAuthProvider->getAuthenticatedRequest(
+            'GET',
+            $uri . $query,
+            $this->accessToken,
+            ['headers' => ['Accept' => 'application/json']]
+        );
 
-        $response = $request->send();
+        $response = $this->httpClient->send($request);
 
-        // Check for errors
-        if ($response->hasErrors()) {
-            throw new DaisyconApiException('Invalid data');
+        if ($response->getStatusCode() != 200) {
+            throw new DaisyconApiException($response->getBody()->getContents());
         }
 
+        var_dump($response->getBody()->getContents());exit;
+
         return $response;
+    }
+
+    public function setTokens(string $accessToken)
+    {
+        $this->refreshToken();
+
+        $this->accessToken = $accessToken;
     }
 }

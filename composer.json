@@ -3,12 +3,18 @@
     "description": "Daisycon API client",
     "type": "library",
     "require": {
-        "nategood/httpful": "^0.2.20"
+        "nategood/httpful": "^0.2.20",
+        "league/oauth2-client": "dev-master#43c59dd"
     },
     "license": "MIT",
     "autoload": {
         "psr-4": {
             "whitelabeled\\DaisyconApi\\": "src"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
         }
     },
     "authors": [
