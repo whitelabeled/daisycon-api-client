@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.3
+
+* Fix: more pagination bugs
+
 ## v3.0.2
 
 * Fix: pagination bugs
