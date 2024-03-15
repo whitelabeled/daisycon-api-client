@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.4
+
+* Enh: remove nategood/httpful as required package
+
 ## v3.0.3
 
 * Fix: more pagination bugs
