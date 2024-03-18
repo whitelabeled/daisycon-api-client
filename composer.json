@@ -3,7 +3,7 @@
     "description": "Daisycon API client",
     "type": "library",
     "require": {
-        "league/oauth2-client": "dev-master#43c59dd"
+        "league/oauth2-client": "^2.7"
     },
     "license": "MIT",
     "autoload": {
