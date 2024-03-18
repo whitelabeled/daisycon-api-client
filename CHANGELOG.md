@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.5
+
+* Enh: update league/oauth2-client to stable version v2.7.0
+
 ## v3.0.4
 
 * Enh: remove nategood/httpful as required package
