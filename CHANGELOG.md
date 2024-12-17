@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.7
+
+* Fix: bug in date parsing in `getTransactions` method
+
 ## v3.0.6
 
 * Enh: improve date parsing in `getTransactions` method
