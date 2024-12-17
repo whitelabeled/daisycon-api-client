@@ -258,7 +258,7 @@ class Transaction
             return null;
         } else {
             // Create from RFC3339 format
-            $parsedDate = DateTime::createFromFormat(DateTime::RFC3339, $date);
+            $parsedDate = DateTime::createFromFormat('Y-m-d H:i:s', $date, new \DateTimeZone('Europe/Amsterdam'));
 
             if (!$parsedDate) {
                 return null;
