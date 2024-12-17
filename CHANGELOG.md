@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.6
+
+* Enh: improve date parsing in `getTransactions` method
+
 ## v3.0.5
 
 * Enh: update league/oauth2-client to stable version v2.7.0
