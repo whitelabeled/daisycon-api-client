@@ -254,10 +254,17 @@ class Transaction
      */
     private static function parseDate($date)
     {
-        if ($date == null) {
+        if ($date == null || $date == '') {
             return null;
         } else {
-            return new \DateTime($date);
+            // Create from RFC3339 format
+            $parsedDate = DateTime::createFromFormat(DateTime::RFC3339, $date);
+
+            if (!$parsedDate) {
+                return null;
+            } else {
+                return $parsedDate;
+            }
         }
     }
 }
