@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.8
+
+* Fix: don't add hours and minutes to date in `getTransactions` method
+
 ## v3.0.7
 
 * Fix: bug in date parsing in `getTransactions` method

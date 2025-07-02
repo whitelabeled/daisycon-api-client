@@ -107,7 +107,7 @@ class DaisyconClient
         $params = [
             'page' => $page,
             'per_page' => $this->itemsPerPage,
-            'date_modified_start' => $startDate->format('Y-m-d H:i:s'),
+            'date_modified_start' => $startDate->format('Y-m-d'),
         ];
 
         if ($this->mediaIds != null && count($this->mediaIds) > 0) {
@@ -115,7 +115,7 @@ class DaisyconClient
         }
 
         if ($endDate != null) {
-            $params['date_modified_end'] = $endDate->format('Y-m-d H:i:s');
+            $params['date_modified_end'] = $endDate->format('Y-m-d');
         }
 
         $query = '?' . http_build_query($params);
