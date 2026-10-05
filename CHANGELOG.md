@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.0.9
+## v3.0.10
 
 * Fix: PHP 8.4 deprecation of implicitly nullable `$endDate` parameter in `getTransactions` method
 
