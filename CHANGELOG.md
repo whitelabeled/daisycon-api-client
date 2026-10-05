@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.9
+
+* Fix: PHP 8.4 deprecation of implicitly nullable `$endDate` parameter in `getTransactions` method
+
 ## v3.0.8
 
 * Fix: don't add hours and minutes to date in `getTransactions` method

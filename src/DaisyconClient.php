@@ -102,7 +102,7 @@ class DaisyconClient
      * @return array Transaction objects. Each part of a transaction is returned as a separate Transaction.
      * @throws DaisyconApiException
      */
-    public function getTransactions(DateTime $startDate, DateTime $endDate = null, $page = 1)
+    public function getTransactions(DateTime $startDate, ?DateTime $endDate = null, $page = 1)
     {
         $params = [
             'page' => $page,
